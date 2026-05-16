@@ -1,0 +1,26 @@
+CREATE TABLE Habit (
+    id          TEXT    NOT NULL PRIMARY KEY,
+    name        TEXT    NOT NULL,
+    emoji       TEXT,
+    color       TEXT    NOT NULL DEFAULT '#4CAF50',
+    frequency   TEXT    NOT NULL,
+    times_per_week INTEGER,
+    created_at  TEXT    NOT NULL,
+    archived_at TEXT,
+    updated_at  TEXT    NOT NULL
+);
+
+CREATE INDEX idx_habit_archived ON Habit(archived_at);
+
+insertHabit:
+INSERT OR REPLACE INTO Habit(id, name, emoji, color, frequency, times_per_week, created_at, archived_at, updated_at)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+selectAllActive:
+SELECT * FROM Habit WHERE archived_at IS NULL;
+
+selectById:
+SELECT * FROM Habit WHERE id = ?;
+
+updateArchived:
+UPDATE Habit SET archived_at = ?, updated_at = ? WHERE id = ?;

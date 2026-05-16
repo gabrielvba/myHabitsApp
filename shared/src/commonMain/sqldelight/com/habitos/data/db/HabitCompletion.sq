@@ -1,0 +1,28 @@
+CREATE TABLE HabitCompletion (
+    id           TEXT NOT NULL PRIMARY KEY,
+    habit_id     TEXT NOT NULL REFERENCES Habit(id),
+    date         TEXT NOT NULL,
+    completed_at TEXT NOT NULL,
+
+    UNIQUE(habit_id, date)
+);
+
+CREATE INDEX idx_completion_habit    ON HabitCompletion(habit_id);
+CREATE INDEX idx_completion_date     ON HabitCompletion(date);
+CREATE INDEX idx_completion_habit_date ON HabitCompletion(habit_id, date);
+
+insertCompletion:
+INSERT INTO HabitCompletion(id, habit_id, date, completed_at)
+VALUES (?, ?, ?, ?);
+
+deleteCompletion:
+DELETE FROM HabitCompletion WHERE habit_id = ? AND date = ?;
+
+selectByHabitId:
+SELECT * FROM HabitCompletion WHERE habit_id = ?;
+
+selectByHabitIdAndDate:
+SELECT * FROM HabitCompletion WHERE habit_id = ? AND date = ?;
+
+selectByHabitIdBetween:
+SELECT * FROM HabitCompletion WHERE habit_id = ? AND date >= ? AND date <= ?;
