@@ -32,7 +32,7 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
-        androidUnitTest.dependencies {
+        getByName("androidUnitTest").dependencies {
             implementation(libs.sqldelight.sqlite)
         }
         androidMain.dependencies {
