@@ -32,8 +32,11 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
-        getByName("androidUnitTest").dependencies {
-            implementation(libs.sqldelight.sqlite)
+        // sqlite-driver is JVM-only; androidTest inherits from commonTest and adds it
+        val androidUnitTest by getting {
+            dependencies {
+                implementation(libs.sqldelight.sqlite)
+            }
         }
         androidMain.dependencies {
             implementation(libs.sqldelight.android)
