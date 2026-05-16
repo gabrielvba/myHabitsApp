@@ -8,11 +8,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # Build Android app
 ./gradlew :androidApp:assembleDebug
 
-# Run all shared (commonTest) unit tests — no emulator needed
-./gradlew :shared:allTests
+# Run unit tests (commonTest fakes + use cases) — no emulator needed
+./gradlew :shared:testDebugUnitTest
 
 # Run a single test class
-./gradlew :shared:allTests --tests "com.habitos.domain.usecase.StreakCalculatorsTest"
+./gradlew :shared:testDebugUnitTest --tests "com.habitos.domain.usecase.StreakCalculatorsTest"
 
 # Generate SQLDelight code (run after editing .sq files)
 ./gradlew :shared:generateCommonMainHabitosDatabaseInterface
@@ -30,7 +30,8 @@ Kotlin Multiplatform project. All business logic lives in `shared/` and is share
 shared/commonMain   ← domain model, use cases, repository interfaces, SQLDelight queries
 shared/androidMain  ← DatabaseDriverFactory (Android), UUID generation (actual)
 shared/iosMain      ← DatabaseDriverFactory (iOS)
-shared/commonTest   ← unit tests (fakes) + integration tests (in-memory SQLite)
+shared/commonTest        ← unit tests with fakes (runs on JVM and Kotlin/Native)
+shared/androidUnitTest  ← integration tests with JdbcSqliteDriver (JVM-only)
 androidApp/         ← Jetpack Compose UI + ViewModels (consume shared use cases)
 iosApp/             ← SwiftUI views (consume shared use cases via Kotlin framework)
 ```
@@ -54,7 +55,7 @@ Manual DI — no framework. `MainActivity.kt` wires the entire graph: driver →
 
 Unit tests use `FakeHabitRepository` / `FakeCompletionRepository` (in `commonTest`) — no mocking framework (Mockito is JVM-only; KMP tests run on both JVM and Kotlin/Native).
 
-Integration tests (`RealRepositoriesIntegrationTest`) use `JdbcSqliteDriver(IN_MEMORY)` via `TestDatabaseDriverFactory` — analogous to H2 in Spring. Call `HabitosDatabase.Schema.create(driver)` in test setup.
+Integration tests (`RealRepositoriesIntegrationTest`) use `JdbcSqliteDriver(IN_MEMORY)` via `TestDatabaseDriverFactory` — analogous to H2 in Spring. These live in `androidUnitTest` (not `commonTest`) because `JdbcSqliteDriver` is JVM-only and cannot be resolved by the iOS target.
 
 The streak logic has the most edge cases — see `StreakCalculatorsTest` for the full scenario matrix before modifying `GetHabitStreakUseCase`.
 

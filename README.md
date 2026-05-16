@@ -58,7 +58,7 @@ Toda a lógica de negócio tem testes unitários que rodam direto na JVM, sem pr
 
 ```bash
 # No terminal dentro da pasta do projeto:
-./gradlew :shared:allTests
+./gradlew :shared:testDebugUnitTest
 ```
 
 Ou no Android Studio: clique com o botão direito na pasta `shared/src/commonTest` → **Run Tests**.
